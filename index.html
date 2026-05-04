@@ -1,4 +1,77 @@
-<footer class="mt-12 py-6 border-t border-slate-200 no-print">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver Compliance Portal — School Bus Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @media print {
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+            body { background-color: white !important; }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen font-sans text-slate-900">
+
+    <main class="max-w-4xl mx-auto p-6 md:p-12">
+        <!-- Header Section -->
+        <header class="mb-10 no-print border-b border-slate-200 pb-6">
+            <h1 class="text-3xl font-extrabold text-blue-900">Driver Compliance Portal</h1>
+            <p class="text-slate-600 mt-2">Official Driver Documentation & Training Attestation</p>
+        </header>
+
+        <!-- Form Section (Visible on Web) -->
+        <section class="no-print bg-white shadow-sm border border-slate-200 rounded-xl p-8 mb-8">
+            <h2 class="text-xl font-semibold mb-4">Document Signature</h2>
+            <p class="text-sm text-slate-500 mb-6">By entering your name below, you certify that you have reviewed the required safety materials and acknowledge your compliance with the standards outlined.</p>
+            
+            <div class="space-y-4">
+                <label for="driverNameInput" class="block text-sm font-medium text-slate-700">Type Full Name to Sign:</label>
+                <input type="text" id="driverNameInput" 
+                       class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                       placeholder="e.g. JOHN Q. DRIVER">
+                
+                <button onclick="generateReceipt()" 
+                        class="w-full md:w-auto px-8 py-3 bg-blue-700 hover:bg-blue-800 text-white font-bold rounded-lg transition-colors shadow-lg">
+                    Sign and Generate PDF
+                </button>
+            </div>
+        </section>
+
+        <!-- Printable Receipt (Hidden until "Sign" is clicked) -->
+        <div id="printableReceipt" class="hidden bg-white p-10 border-4 border-double border-blue-900">
+            <div class="text-center border-b-2 border-blue-900 pb-6 mb-6">
+                <h2 class="text-2xl font-bold text-blue-900 uppercase">Training Verification Receipt</h2>
+                <p class="text-sm text-slate-600">FMCSR & School Bus Safety Standards Compliance</p>
+            </div>
+
+            <div class="space-y-6 py-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-xs font-bold text-blue-900 uppercase">Driver Name</p>
+                        <p id="displayDriverName" class="text-lg font-mono border-b border-slate-300"></p>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-blue-900 uppercase">Verification Date</p>
+                        <p id="displayDate" class="text-lg font-mono border-b border-slate-300"></p>
+                    </div>
+                </div>
+
+                <div class="mt-8">
+                    <p class="text-xs font-bold text-blue-900 uppercase mb-2">Digital Signature</p>
+                    <p id="displaySignature" class="text-3xl font-serif text-blue-800 italic"></p>
+                    <p class="text-[10px] text-slate-400 mt-1">Electronically verified via Driver Compliance Portal</p>
+                </div>
+            </div>
+
+            <div class="mt-10 pt-6 border-t border-slate-200">
+                <button onclick="resetForm()" class="no-print text-blue-600 underline text-sm">Return to Edit</button>
+            </div>
+        </div>
+
+        <footer class="mt-12 py-6 border-t border-slate-200 no-print">
             <div class="flex flex-col md:flex-row justify-between items-center text-xs text-slate-500 gap-4 px-4 text-center md:text-left">
                 <p>© 2026 Driver Compliance Portal — School Bus Edition</p>
                 <div class="flex items-center gap-4">
@@ -10,7 +83,6 @@
                 Important: In your print settings, ensure "Background Graphics" is ON to preserve the official blue headers and formatting on the PDF.
             </p>
         </footer>
-
     </main>
 
     <script>
@@ -26,30 +98,23 @@
             document.getElementById('displaySignature').innerText = name;
             document.getElementById('displayDate').innerText = new Date().toLocaleDateString();
 
-            // 2. Hide the website UI and show ONLY the receipt
+            // 2. Hide UI, show Receipt
             document.querySelectorAll('.no-print').forEach(el => el.classList.add('hidden'));
             const receipt = document.getElementById('printableReceipt');
-            receipt.classList.remove('print-only');
-            receipt.classList.add('block');
+            receipt.classList.remove('hidden');
             
-            // 3. Auto-scroll to top so the print preview starts at the beginning
+            // 3. Auto-scroll and print
             window.scrollTo(0,0);
-
-            // 4. Trigger the Print Logic
-            // We use a tiny delay (100ms) to ensure the UI has finished hiding 
-            // the form before the print dialog captures the screen.
             setTimeout(() => {
                 window.print();
-            }, 100);
+            }, 150);
         }
 
         function resetForm() {
-            // This allows the driver to go back and fix a typo if needed
             document.querySelectorAll('.no-print').forEach(el => el.classList.remove('hidden'));
             const receipt = document.getElementById('printableReceipt');
-            receipt.classList.add('print-only');
-            receipt.classList.remove('block');
+            receipt.classList.add('hidden');
         }
     </script>
 </body>
-</html> 
+</html>
